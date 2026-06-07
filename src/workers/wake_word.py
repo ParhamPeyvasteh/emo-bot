@@ -15,14 +15,14 @@ class WakeWordWorker(BaseWorker):
         self.model = None
         self.threshold = settings.wake_word_threshold
         self.model_path = Path("src/models")
+        self.last_trigger_time = 0           # for cooldown
+        self.cooldown_seconds = 2.0          # ignore further detections for 2 seconds
         self.bus.subscribe(EventType.AUDIO_CHUNK, self.handle_audio_chunk)
 
     def _resolve_model_path(self) -> str:
-        # Automatically pick the first .onnx file in models folder
         model_files = list(self.model_path.glob("*.onnx"))
         if not model_files:
             raise FileNotFoundError(f"No .onnx model found in {self.model_path}")
-        # Prefer alexa model if exists, otherwise take first
         for f in model_files:
             if "alexa" in f.name.lower():
                 return str(f)
@@ -43,16 +43,22 @@ class WakeWordWorker(BaseWorker):
     async def handle_audio_chunk(self, message: Message):
         if self.model is None:
             return
+        
+        # Cooldown check
+        now = asyncio.get_event_loop().time()
+        if now - self.last_trigger_time < self.cooldown_seconds:
+            return   # ignore this chunk
+        
         audio = message.payload
         if audio.dtype != np.int16:
             audio = audio.astype(np.int16)
         try:
             prediction = self.model.predict(audio)
-            # Get the highest confidence keyword
             best = max(prediction.items(), key=lambda x: x[1])
             word, conf = best
             if conf > self.threshold:
                 logger.info(f"Wake word '{word}' detected (conf={conf:.3f})")
+                self.last_trigger_time = now   # update cooldown
                 await self.bus.publish(Message(
                     type=EventType.WAKE_WORD_DETECTED,
                     payload={"wake_word": word, "confidence": conf}

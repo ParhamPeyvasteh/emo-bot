@@ -3,6 +3,10 @@ from src.core.message_bus import MessageBus
 from src.core.logging_config import setup_logging
 from src.workers.audio_capture import AudioCaptureWorker
 from src.workers.wake_word import WakeWordWorker
+from src.workers.stt import STTWorker 
+from src.workers.response import ResponseWorker
+from src.workers.tts import TTSWorker
+from src.workers.orchestrator import OrchestratorWorker
 
 logger = setup_logging()
 
@@ -15,6 +19,10 @@ async def main():
     workers = [
         AudioCaptureWorker(bus),
         WakeWordWorker(bus),
+        STTWorker(bus),
+        ResponseWorker(bus),
+        TTSWorker(bus),
+        OrchestratorWorker(bus),
     ]
 
     for w in workers:

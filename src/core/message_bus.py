@@ -20,6 +20,8 @@ class EventType(Enum):
     AUDIO_OUTPUT = "audio_output"
     BLE_COMMAND = "ble_command"
     SYSTEM_ERROR = "system_error"
+    TTS_FINISHED = "tts_finished"
+    START_LISTENING = "start_listening"
 
 @dataclass
 class Message:
