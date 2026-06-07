@@ -20,25 +20,25 @@ classifiers = [
 ]
 
 dependencies = [
-    "pydantic-settings>=2.0.0",          # Configuration management
-    "pydantic>=2.0.0",                   # Core data validation
-    "python-dotenv>=1.0.0",              # Load .env files
-    "sounddevice>=0.4.0",                # Cross-platform audio capture
-    "numpy>=1.24.0",                     # Audio data manipulation
-    "webrtcvad>=2.0.0",                  # Voice activity detection
-    "pvporcupine>=3.0.0",                # Wake word detection
-    "vosk>=0.3.45",                      # Offline speech-to-text
-    "openai-whisper>=20240930",          # Cloud/fallback STT
-    "coqui-tts>=0.24.0",                 # Offline TTS (primary)
-    "bleak>=0.21.0",                     # BLE support (Windows/macOS/Linux)
-    "pyaudio>=0.2.14",                   # Audio output fallback
-    "transformers>=4.30.0",              # Hugging Face models (emotion)
-    "torch>=2.0.0",                      # PyTorch (required by transformers/whisper/coqui)
-    "langdetect>=1.0.9",                 # Language detection
-    "aiofiles>=23.0.0",                  # Async file operations
-    "httpx>=0.24.0",                     # Async HTTP client for APIs
-    "tenacity>=8.2.0",                   # Retry logic
-    "loguru>=0.7.0",                     # Advanced logging
+    "pydantic-settings>=2.0.0",
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "sounddevice>=0.4.0",
+    "numpy>=1.24.0",
+    "webrtcvad-wheels>=2.0.0",        # <-- use this instead of webrtcvad
+    "pvporcupine>=3.0.0",
+    "vosk>=0.3.45",
+    "openai-whisper>=20240930",
+    # "coqui-tts>=0.24.0",            # removed – use Windows SAPI or pyttsx3
+    "bleak>=0.21.0",
+    "pyaudio>=0.2.14",
+    "transformers>=4.30.0",
+    "torch>=2.0.0",
+    "langdetect>=1.0.9",
+    "aiofiles>=23.0.0",
+    "httpx>=0.24.0",
+    "tenacity>=8.2.0",
+    "loguru>=0.7.0",
 ]
 
 [project.optional-dependencies]

@@ -3,11 +3,10 @@ from loguru import logger
 from .config import settings
 
 def setup_logging():
-    """Configure application-wide logging."""
-    logger.remove()  # Remove default handler
+    logger.remove()
     logger.add(
         sys.stderr,
-        format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
+        format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan> - <level>{message}</level>",
         level=settings.log_level,
         colorize=True
     )
