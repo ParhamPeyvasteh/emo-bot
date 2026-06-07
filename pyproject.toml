@@ -1,0 +1,85 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "emo-bot"
+version = "0.1.0"
+description = "Production-grade voice assistant robot with offline-first architecture"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Parham Peyvasteh", email = "your.email@example.com"}]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "pydantic-settings>=2.0.0",          # Configuration management
+    "pydantic>=2.0.0",                   # Core data validation
+    "python-dotenv>=1.0.0",              # Load .env files
+    "sounddevice>=0.4.0",                # Cross-platform audio capture
+    "numpy>=1.24.0",                     # Audio data manipulation
+    "webrtcvad>=2.0.0",                  # Voice activity detection
+    "pvporcupine>=3.0.0",                # Wake word detection
+    "vosk>=0.3.45",                      # Offline speech-to-text
+    "openai-whisper>=20240930",          # Cloud/fallback STT
+    "coqui-tts>=0.24.0",                 # Offline TTS (primary)
+    "bleak>=0.21.0",                     # BLE support (Windows/macOS/Linux)
+    "pyaudio>=0.2.14",                   # Audio output fallback
+    "transformers>=4.30.0",              # Hugging Face models (emotion)
+    "torch>=2.0.0",                      # PyTorch (required by transformers/whisper/coqui)
+    "langdetect>=1.0.9",                 # Language detection
+    "aiofiles>=23.0.0",                  # Async file operations
+    "httpx>=0.24.0",                     # Async HTTP client for APIs
+    "tenacity>=8.2.0",                   # Retry logic
+    "loguru>=0.7.0",                     # Advanced logging
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.0.0",
+    "ruff>=0.6.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.0.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "RUF", # ruff-specific rules
+]
+ignore = ["E501"]  # Ignore line too long (handled by formatter)
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
