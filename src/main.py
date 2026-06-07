@@ -1,37 +1,66 @@
 import asyncio
 import signal
-from src.core.config import settings
 from src.core.message_bus import MessageBus
+from src.core.logging_config import setup_logging
 from src.workers.audio_capture import AudioCaptureWorker
 from src.workers.wake_word import WakeWordWorker
-# ... other workers
+from src.workers.stt import STTWorker
+from src.workers.emotion import EmotionWorker
+from src.workers.llm import LLMWorker
+from src.workers.tts import TTSWorker
+from src.workers.ble import BLEWorker
+
+logger = setup_logging()
 
 async def main():
+    logger.info("Starting Emo-Bot Voice Assistant")
+    
+    # Initialize message bus
     bus = MessageBus()
     bus.start()
     
-    # Instantiate workers (order matters for subscriptions)
+    # Initialize workers
     workers = [
-        AudioCaptureWorker(bus, settings),
-        WakeWordWorker(bus, settings),
-        # STT, emotion, etc. will be added later
+        AudioCaptureWorker(bus),
+        WakeWordWorker(bus),
+        STTWorker(bus),
+        EmotionWorker(bus),
+        LLMWorker(bus),
+        TTSWorker(bus),
+        BLEWorker(bus),
     ]
     
-    # Start them concurrently
-    await asyncio.gather(*[w.start() for w in workers])
+    # Start all workers concurrently
+    for worker in workers:
+        await worker.start()
     
-    # Graceful shutdown
+    logger.info("All workers started successfully")
+    
+    # Graceful shutdown handling
     stop_event = asyncio.Event()
     def handle_signal():
+        logger.info("Shutdown signal received")
         stop_event.set()
+    
     loop = asyncio.get_running_loop()
     for sig in (signal.SIGTERM, signal.SIGINT):
         loop.add_signal_handler(sig, handle_signal)
     
     await stop_event.wait()
-    # Cancel all workers (they should clean up)
-    for w in workers:
-        await w.stop()
+    
+    # Stop all workers
+    logger.info("Stopping workers...")
+    for worker in workers:
+        await worker.stop()
+    
+    await bus.stop()
+    logger.info("Emo-Bot shutdown complete")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logger.info("Process interrupted by user")
+    except Exception as e:
+        logger.exception(f"Fatal error: {e}")
+        raise
