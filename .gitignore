@@ -1,23 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+
 # Virtual environments
 .venv/
-env/
 venv/
+ENV/
 
-# Model files (large)
+# Local configuration files containing secrets
+.env
+.env.local
+.env.*.local
+
+# Model files (large binaries, downloaded from external sources)
 src/models/*
 !src/models/.gitkeep
+models/
+*.pt
+*.pth
+*.bin
+*.onnx
+*.tflite
+*.ppn
 
-# Local config
-.env
-
-# Python cache
-__pycache__/
-*.pyc
-
-# Logs
+# Logs and databases
 logs/
 *.log
+*.sqlite3
 
-# IDEs
+# IDE and OS specific files
 .vscode/
 .idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Testing and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# Temporary files
+*.tmp
+*.bak
