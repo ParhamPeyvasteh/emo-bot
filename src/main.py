@@ -7,6 +7,8 @@ from src.workers.stt import STTWorker
 from src.workers.response import ResponseWorker
 from src.workers.tts import TTSWorker
 from src.workers.orchestrator import OrchestratorWorker
+from src.workers.cache import CacheWorker 
+from src.workers.ai import AIWorker
 
 logger = setup_logging()
 
@@ -20,9 +22,10 @@ async def main():
         AudioCaptureWorker(bus),
         WakeWordWorker(bus),
         STTWorker(bus),
-        ResponseWorker(bus),
         TTSWorker(bus),
         OrchestratorWorker(bus),
+        AIWorker(bus),          # <-- AI instead of echo
+        CacheWorker(bus),
     ]
 
     for w in workers:
