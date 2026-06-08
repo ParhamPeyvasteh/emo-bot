@@ -40,11 +40,16 @@ class AudioCaptureWorker(BaseWorker):
         if status:
             logger.warning(f"Audio status: {status}")
         chunk = indata.flatten()
-        if self.vad.is_speech(chunk):
+        energy = np.sqrt(np.mean(chunk.astype(np.float32)**2))
+        logger.debug(f"Audio callback: energy={energy:.5f}")
+        if energy > self.vad.threshold:
+            logger.debug(f"Speech detected, energy={energy:.5f}")
             asyncio.run_coroutine_threadsafe(
                 self.bus.publish(Message(type=EventType.AUDIO_CHUNK, payload=chunk)),
                 self.loop
             )
+        else:
+            logger.debug(f"Silence (energy below {self.vad.threshold})")
 
     async def stop(self):
         self.running = False
